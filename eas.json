@@ -1,0 +1,28 @@
+{
+    "cli": {
+        "version": ">= 7.0.0"
+    },
+    "build": {
+        "development": {
+            "developmentClient": true,
+            "distribution": "internal"
+        },
+        "preview": {
+            "distribution": "internal",
+            "android": {
+                "buildType": "apk"
+            },
+            "env": {
+                "EXPO_PUBLIC_API_URL": "http://bookworm-271560712.us-east-2.elb.amazonaws.com"
+            }
+        },
+        "production": {
+            "env": {
+                "EXPO_PUBLIC_API_URL": "http://bookworm-271560712.us-east-2.elb.amazonaws.com"
+            }
+        }
+    },
+    "submit": {
+        "production": {}
+    }
+}

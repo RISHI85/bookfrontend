@@ -1,0 +1,67 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.1.0
+
+jobs:
+  build_preview:
+    docker:
+      - image: cimg/node:20.10.0
+    resource_class: medium
+    # EXPO_TOKEN is injected from CircleCI Project Settings > Environment Variables
+    # or from the "expo-credentials" context
+    steps:
+      - checkout
+
+      # Verify EXPO_TOKEN is configured in CircleCI
+      - run:
+          name: Verify Environment Variables
+          command: |
+            if [ -z "$EXPO_TOKEN" ]; then
+              echo "ERROR: EXPO_TOKEN is not set in CircleCI Environment Variables."
+              echo "Go to CircleCI > Project Settings > Environment Variables and add it."
+              exit 1
+            fi
+            echo "All required environment variables are configured."
+
+      # Cache node_modules for faster builds
+      - restore_cache:
+          keys:
+            - v1-deps-{{ checksum "package-lock.json" }}
+            - v1-deps-
+
+      - node/install-packages:
+          pkg-manager: npm
+
+      - save_cache:
+          key: v1-deps-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+
+      - run:
+          name: Install EAS CLI
+          command: npm install -g eas-cli
+
+      - run:
+          name: Verify EAS Authentication
+          command: eas whoami
+
+      - run:
+          name: Build Preview (Android)
+          command: eas build --profile preview --platform android --non-interactive
+          no_output_timeout: 30m
+
+      # - run:
+      #     name: Build Preview (iOS)
+      #     command: eas build --profile preview --platform ios --non-interactive
+      #     no_output_timeout: 30m
+
+workflows:
+  preview_on_push:
+    jobs:
+      - build_preview:
+          context: expo-credentials
+          filters:
+            branches:
+              only:
+                - main
