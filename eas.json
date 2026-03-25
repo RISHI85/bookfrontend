@@ -13,12 +13,12 @@
                 "buildType": "apk"
             },
             "env": {
-                "EXPO_PUBLIC_API_URL": "http://bookworm-271560712.us-east-2.elb.amazonaws.com"
+                "EXPO_PUBLIC_API_URL": "app-alb-907089400.ap-south-1.elb.amazonaws.com"
             }
         },
         "production": {
             "env": {
-                "EXPO_PUBLIC_API_URL": "http://bookworm-271560712.us-east-2.elb.amazonaws.com"
+                "EXPO_PUBLIC_API_URL": "app-alb-907089400.ap-south-1.elb.amazonaws.com"
             }
         }
     },
